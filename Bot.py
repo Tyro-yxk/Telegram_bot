@@ -9,6 +9,7 @@ from update import renew_subscription
 
 class TelegramBot:
     def __init__(self, config_name='config.json'):
+        self.user_number = 0
         self.bot_token = ""
         self.user_json = {}
         self.app: Application = None
@@ -25,6 +26,7 @@ class TelegramBot:
                 self.bot_token = config.get("BOT_TOKEN", self.bot_token)
                 user_info = config.get("USER_INFO", user_info)
         self.user_json = json.loads(user_info) if isinstance(user_info, str) else user_info
+        self.user_number = self.user_json
 
     async def handle_coupon(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg = update.message

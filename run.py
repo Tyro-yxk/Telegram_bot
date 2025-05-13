@@ -17,11 +17,10 @@ def timer_thread(duration):
 
 
 if __name__ == "__main__":
-    time_out = 5
+    time_out = 10
     bot = TelegramBot()
 
-    timer = threading.Thread(target=timer_thread, args=(time_out,))
-    # timer.daemon = True
+    timer = threading.Thread(target=timer_thread, args=(time_out * len(bot.user_json),))
     timer.start()
 
     try:
