@@ -18,7 +18,7 @@ jobs:
       BOT_TOKEN: ${{secrets.BOT_TOKEN}}
       USER_INFO: ${{secrets.USER_INFO}}
 
-name: cac apex
+name: run_bot
 on:
   workflow_dispatch:
   schedule:
