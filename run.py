@@ -1,3 +1,4 @@
+import os
 import sys
 import threading
 from time import sleep
@@ -12,6 +13,7 @@ def timer_thread(duration):
     sleep(duration)
     print("计时结束，发送关闭信号...")
     shutdown_event.set()  # 设置事件通知主线程关闭
+    os._exit(0)
 
 
 if __name__ == "__main__":
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     bot = TelegramBot()
 
     timer = threading.Thread(target=timer_thread, args=(time_out,))
-    timer.daemon = True
+    # timer.daemon = True
     timer.start()
 
     try:
@@ -29,6 +31,6 @@ if __name__ == "__main__":
         shutdown_event.set()
     finally:
         # 等待所有线程结束
-        timer.join(timeout=1)
+        timer.join(1)
         print("程序已退出")
         sys.exit(0)

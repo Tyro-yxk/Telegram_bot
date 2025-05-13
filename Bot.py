@@ -2,7 +2,7 @@ import json
 import os
 
 from telegram import Update
-from telegram.ext import ContextTypes, CommandHandler, ApplicationBuilder
+from telegram.ext import ContextTypes, CommandHandler, ApplicationBuilder, Application
 
 from update import renew_subscription
 
@@ -11,9 +11,9 @@ class TelegramBot:
     def __init__(self, config_name='config.json'):
         self.bot_token = ""
         self.user_json = {}
-        self.app = None
-        self.load_config()
+        self.app: Application = None
         self._config_name = config_name
+        self.load_config()
 
     def load_config(self):
         self.bot_token = os.environ.get("BOT_TOKEN")
@@ -53,7 +53,7 @@ class TelegramBot:
                     reply = f"❌ {user.get('email')} 续订失败\n原因: {result_message}"
                     await msg.reply_text(reply)
                     print(reply)
-
+            # self.shutdown()
         except Exception as e:
             error_msg = f"⚠️ 处理优惠码时出错: {str(e)}"
             await msg.reply_text(error_msg)
@@ -74,8 +74,9 @@ class TelegramBot:
 
         # Start the bot
         print("Bot is running...")
-        self.app.run_polling()
+        self.app.run_polling(stop_signals=None)
 
     def shutdown(self):
         self.app.stop()
+        self.app.shutdown()
         print("Bot is shutting down...")
