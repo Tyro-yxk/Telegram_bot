@@ -15,7 +15,7 @@ def timer_thread(duration):
 
 
 if __name__ == "__main__":
-    time_out = 30 * 60
+    time_out = 5
     bot = TelegramBot()
 
     timer = threading.Thread(target=timer_thread, args=(time_out,))
