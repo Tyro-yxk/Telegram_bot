@@ -5,6 +5,7 @@ from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler, ApplicationBuilder, Application
 
 from update import renew_subscription
+from notify import pushme
 
 
 class TelegramBot:
@@ -50,15 +51,18 @@ class TelegramBot:
                 if success:
                     reply = f"✅ {user.get('email')} 续订成功！\n{result_message}"
                     await msg.reply_text(reply)
+                    pushme.send('鸡场签到', reply)
                     print(reply)
                 else:
                     reply = f"❌ {user.get('email')} 续订失败\n原因: {result_message}"
                     await msg.reply_text(reply)
+                    pushme.send('鸡场签到', reply)
                     print(reply)
             # self.shutdown()
         except Exception as e:
             error_msg = f"⚠️ 处理优惠码时出错: {str(e)}"
             await msg.reply_text(error_msg)
+            pushme.send('鸡场签到', error_msg)
             print(error_msg)
 
     def setup_handlers(self) -> None:
