@@ -16,6 +16,7 @@ jobs:
 
     env:
       BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+      USER_INFO: ${{secrets.USER_INFO}}
       PLAN_URL: ${{secrets.PLAN_URL}}
       PUSH_KEY: ${{secrets.PUSH_KEY}}
       PUSH_URL: ${{secrets.PUSH_URL}}
