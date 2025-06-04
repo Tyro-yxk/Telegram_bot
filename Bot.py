@@ -4,13 +4,13 @@ import os
 from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler, ApplicationBuilder, Application
 
+from notify import pushme
 from update import renew_subscription
 
 
 class TelegramBot:
     def __init__(self, config_name='config.json'):
         self.plan_url = None
-        self.user_number = 0
         self.bot_token = ""
         self.user_json = {}
         self.app: Application = None
@@ -21,14 +21,7 @@ class TelegramBot:
         self.bot_token = os.environ.get("BOT_TOKEN")
         self.plan_url = os.environ.get("PLAN_URL")
         user_info = os.environ.get("USER_INFO")
-
-        if not self.bot_token or not user_info:
-            with open(self._config_name, "r") as f:
-                config = json.load(f)
-                self.bot_token = config.get("BOT_TOKEN", self.bot_token)
-                user_info = config.get("USER_INFO", user_info)
-        self.user_json = json.loads(user_info) if isinstance(user_info, str) else user_info
-        self.user_number = self.user_json
+        self.user_json = json.loads(user_info)
 
     async def handle_coupon(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg = update.message
@@ -37,8 +30,10 @@ class TelegramBot:
                 coupon_code = "".join(context.args)
             else:
                 await msg.reply_text("请直接发送您的优惠码")
+                pushme.send("[f]鸡场签到", "请直接发送您的优惠码")
                 return
             print("优惠码: ", coupon_code)
+            pushme.send("[s]鸡场签到", "优惠码: " + coupon_code)
             for user in self.user_json:
                 data = renew_subscription(coupon_code, user, self.plan_url)
                 success = True
@@ -57,11 +52,13 @@ class TelegramBot:
                     reply = f"❌ {user.get('email')} 续订失败\n原因: {result_message}"
                     await msg.reply_text(reply)
                     print(reply)
+                    pushme.send("[i]鸡场签到", reply)
             # self.shutdown()
         except Exception as e:
             error_msg = f"⚠️ 处理优惠码时出错: {str(e)}"
             await msg.reply_text(error_msg)
             print(error_msg)
+            pushme.send("[f]鸡场签到", error_msg)
 
     def setup_handlers(self) -> None:
         """Set up all command handlers"""
