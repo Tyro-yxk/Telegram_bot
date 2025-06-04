@@ -2,9 +2,11 @@
 import re
 import requests
 
+base_url = ""
+
 
 def login(user):
-    url = "https://xn--yet.xn--766a.top/api/v1/passport/auth/login"
+    url = f"{base_url}/api/v1/passport/auth/login"
     result = requests.post(url, data=user)
     if result.status_code == 200:
         return 200, result.json()
@@ -12,7 +14,7 @@ def login(user):
 
 
 def get_subscription(_header):
-    url = "https://xn--yet.xn--766a.top/api/v1/user/plan/fetch"
+    url = f"{base_url}/api/v1/user/plan/fetch"
     result = requests.get(url, headers=_header)
     if result.status_code == 200:
         data = result.json()
@@ -24,7 +26,7 @@ def get_subscription(_header):
 
 
 def check(coupon_code, _plan_id, _header):
-    url = "https://xn--yet.xn--766a.top/api/v1/user/coupon/check"
+    url = f"{base_url}/api/v1/user/coupon/check"
     data = {
         "code": coupon_code,
         "plan_id": _plan_id
@@ -37,7 +39,7 @@ def check(coupon_code, _plan_id, _header):
 
 
 def save(_plan_id, _period, _coupon_code, _header):
-    url = "https://xn--yet.xn--766a.top/api/v1/user/order/save"
+    url = f"{base_url}/api/v1/user/order/save"
     data = {
         "plan_id": _plan_id,
         "period": _period,
@@ -51,7 +53,7 @@ def save(_plan_id, _period, _coupon_code, _header):
 
 
 def checkout(_trade_no, _method, _header):
-    url = "https://xn--yet.xn--766a.top/api/v1/user/order/checkout"
+    url = f"{base_url}/api/v1/user/order/checkout"
     data = {
         "trade_no": _trade_no,
         "method": _method
@@ -99,5 +101,9 @@ def subscription(coupon_id, user):
     }
 
 
-def renew_subscription(coupon_id, user):
+def renew_subscription(coupon_id, user, plan_url):
+    global base_url
+    if plan_url.endswith("/"):
+        plan_url = plan_url[:-1]
+    base_url = plan_url
     return subscription(coupon_id, user)

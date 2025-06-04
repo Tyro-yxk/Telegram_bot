@@ -9,6 +9,7 @@ from update import renew_subscription
 
 class TelegramBot:
     def __init__(self, config_name='config.json'):
+        self.plan_url = None
         self.user_number = 0
         self.bot_token = ""
         self.user_json = {}
@@ -18,6 +19,7 @@ class TelegramBot:
 
     def load_config(self):
         self.bot_token = os.environ.get("BOT_TOKEN")
+        self.plan_url = os.environ.get("PLAN_URL")
         user_info = os.environ.get("USER_INFO")
 
         if not self.bot_token or not user_info:
@@ -38,7 +40,7 @@ class TelegramBot:
                 return
             print("优惠码: ", coupon_code)
             for user in self.user_json:
-                data = renew_subscription(coupon_code, user)
+                data = renew_subscription(coupon_code, user, self.plan_url)
                 success = True
                 result_message = ""
 
